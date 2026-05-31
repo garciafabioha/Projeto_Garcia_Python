@@ -93,7 +93,29 @@ def criar_tabela_servicos():
 
     print("Tabela servicos criada com sucesso!")
 
+# Alterar e criar campo quantidade de hora na tabela Servicos
+def alterar_tabela_servicos():
+    conn = conectar()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        ALTER TABLE servicos
+        ADD COLUMN IF NOT EXISTS minutos_serv INTEGER DEFAULT 0
+    """)
+
+    cursor.execute("""
+        CREATE UNIQUE INDEX IF NOT EXISTS idx_servicos_codigo_cliente
+        ON servicos (codigo_cliente)
+    """)
+
+    conn.commit()
+    cursor.close()
+    conn.close()
+
+    print("Tabela serviços alterada com sucesso!")    
+
 criar_tabela()
 remover_colunas()
 alterar_tabela()
 criar_tabela_servicos()
+alterar_tabela_servicos()

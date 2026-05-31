@@ -1,9 +1,11 @@
 import streamlit as st
 import datetime
-from banco import criar_tabela
+
+from banco import criar_tabela_servicos, alterar_tabela_servicos
 from cadastrar_servico import cadastrar_servico
 
-criar_tabela()
+criar_tabela_servicos()
+alterar_tabela_servicos()
 
 st.title("Cadastro de Serviços")
 
@@ -30,14 +32,20 @@ with st.form("form_cadastro", clear_on_submit=True):
                                 )
     data_final = st.date_input("Escolha a data final",
                                     min_value=datetime.date(1900, 1, 1),
-                                    max_value=datetime.date.today(),
                                     value=st.session_state["data_final"]
-                                )    
+                                )
+       
     desc_rat = st.text_input("Descrição RAT", max_chars=100)
     desc_serv = st.text_input("Descrição Serviço", max_chars=999)
     sit_serv = st.selectbox("Situação",["Em Andamento",
                             "Aguardando Aprovação",
                             "Aprovado"])
+    
+    minutos_serv = st.number_input("Qtd. Minutos do Serviço",
+                                        min_value=0,
+                                        step=1,
+                                        format="%d"
+                                   )
 
     cadastrar = st.form_submit_button("Cadastrar Serviço")
 
@@ -49,7 +57,8 @@ if cadastrar:
             data_final,
             desc_rat,
             desc_serv,
-            sit_serv
+            sit_serv,
+            int(minutos_serv)
         )
 
         st.session_state["cadastrado"] = True
